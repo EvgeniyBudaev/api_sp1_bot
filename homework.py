@@ -12,6 +12,7 @@ PRAKTIKUM_TOKEN = os.getenv('PRAKTIKUM_TOKEN')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 PRAKTIKUM_URL = 'https://praktikum.yandex.ru/api/user_api/homework_statuses/'
+
 HOMEWORK_STATUSES = {
     'reviewing': 'Работа взята в ревью.',
     'rejected': 'В работе есть ошибки, нужно поправить.',
@@ -23,9 +24,7 @@ logging.basicConfig(
     filename='main.log',
     filemode='w'
 )
-# проинициализируйте бота здесь,
-# чтобы он был доступен в каждом нижеобъявленном методе,
-# и не нужно было прокидывать его в каждый вызов
+
 bot = telegram.Bot(token=TELEGRAM_TOKEN)
 
 
@@ -60,6 +59,7 @@ def get_homeworks(current_timestamp):
         logging.exception(f'В запросе ошибка {error}')
         return {}
 
+
 def send_message(message):
     """Отправка сообщения."""
     return bot.send_message(CHAT_ID, message)
@@ -81,7 +81,7 @@ def main():
                     parse_homework_status(new_homework.get('homeworks')[0]))
             current_timestamp = new_homework.get('current_date',
                                                  current_timestamp)
-            time.sleep(5 * 60)  # Опрашивать раз в пять минут
+            time.sleep(5 * 60)
 
         except Exception as e:
             logging.exception(f'Бот сломался с ошибкой: {e}')
