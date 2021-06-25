@@ -13,11 +13,6 @@ TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 PRAKTIKUM_URL = 'https://praktikum.yandex.ru/api/user_api/homework_statuses/'
 
-HOMEWORK_STATUSES = {
-    'reviewing': 'Работа взята в ревью.',
-    'rejected': 'В работе есть ошибки, нужно поправить.',
-    'approved': 'Ревью успешно пройдено.'}
-
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s, %(levelname)s, %(name)s, %(message)s',
@@ -29,16 +24,17 @@ bot = telegram.Bot(token=TELEGRAM_TOKEN)
 
 
 def parse_homework_status(homework):
+    """Определяется статус домашней работы."""
     homework_name = homework.get('homework_name')
     status = homework.get('status')
-    if status is None or status not in HOMEWORK_STATUSES:
-        return 'Cтатус неизвестен или нет такого домашнего задания.'
+
     if status == 'reviewing':
-        return f'Работа "{homework_name}" взята в ревью.'
-    if status == 'rejected':
-        return f'К сожалению, в работе "{homework_name}" нашлись ошибки.'
+        verdict = 'Работа взята в ревью.'
+    elif status == 'rejected':
+        verdict = 'К сожалению, в работе нашлись ошибки.'
     else:
         verdict = 'Ревьюеру всё понравилось, работа зачтена!'
+
     return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
 
 
