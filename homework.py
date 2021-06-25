@@ -66,7 +66,7 @@ def send_message(message):
 
 
 def main():
-    current_timestamp = int(time.time())  # Начальное значение timestamp
+    current_timestamp = int(time.time())
     logger = logging.getLogger(__name__)
     console_handler = logging.StreamHandler()
     logger.addHandler(console_handler)
