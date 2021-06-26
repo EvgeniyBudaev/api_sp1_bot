@@ -8,10 +8,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+PRAKTIKUM_URL = 'https://praktikum.yandex.ru/'
 PRAKTIKUM_TOKEN = os.getenv('PRAKTIKUM_TOKEN')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
-PRAKTIKUM_URL = 'https://praktikum.yandex.ru/api/user_api/homework_statuses/'
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -25,17 +25,23 @@ bot = telegram.Bot(token=TELEGRAM_TOKEN)
 
 def parse_homework_status(homework):
     """Определяется статус домашней работы."""
-    homework_name = homework.get('homework_name')
-    status = homework.get('status')
+    try:
+        homework_name = homework.get('homework_name')
+        status = homework.get('status')
 
-    if status == 'reviewing':
-        verdict = 'Работа взята в ревью.'
-    elif status == 'rejected':
-        verdict = 'К сожалению, в работе нашлись ошибки.'
-    else:
-        verdict = 'Ревьюеру всё понравилось, работа зачтена!'
+        if status == 'reviewing':
+            verdict = 'Работа взята в ревью.'
+        elif status == 'rejected':
+            verdict = 'К сожалению, в работе нашлись ошибки.'
+        else:
+            verdict = 'Ревьюеру всё понравилось, работа зачтена!'
 
-    return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
+        return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
+
+    except KeyError as error:
+        logging.error(f"Нет названия или статуса домашней работы. {error}")
+    except Exception as error:
+        logging.error(f"Неверный ответ сервера. {error}")
 
 
 def get_homeworks(current_timestamp):
@@ -44,7 +50,7 @@ def get_homeworks(current_timestamp):
         current_timestamp = int(time.time())
     try:
         homework_statuses = requests.get(
-            PRAKTIKUM_URL,
+            f'{PRAKTIKUM_URL}api/user_api/homework_statuses/',
             headers={'Authorization': f'OAuth {PRAKTIKUM_TOKEN}'},
             params={'from_date': current_timestamp})
         return homework_statuses.json()
