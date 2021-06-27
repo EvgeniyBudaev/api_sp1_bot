@@ -6,6 +6,7 @@ import requests
 import telegram
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 PRAKTIKUM_URL = 'https://praktikum.yandex.ru/'
@@ -30,15 +31,18 @@ def parse_homework_status(homework):
         status = homework.get('status')
 
         if status == 'reviewing':
-            verdict = 'Работа взята в ревью.'
+            return 'Работа взята в ревью.'
         elif status == 'rejected':
             verdict = 'К сожалению, в работе нашлись ошибки.'
-        else:
+            return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
+        elif status == 'approved':
             verdict = 'Ревьюеру всё понравилось, работа зачтена!'
+            return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
+        else:
+            return 'Статус домашней работы не определен.'
 
-        return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
-
-    except KeyError:
+    except Exception as error:
+        logging.error(f"Не верный ответ сервера. {error}")
         return 'Не верный ответ сервера.'
 
 
