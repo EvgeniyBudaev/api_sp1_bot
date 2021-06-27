@@ -6,7 +6,6 @@ import requests
 import telegram
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 PRAKTIKUM_URL = 'https://praktikum.yandex.ru/'
@@ -39,10 +38,8 @@ def parse_homework_status(homework):
 
         return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
 
-    except KeyError as error:
-        logging.error(f"Нет названия или статуса домашней работы. {error}")
-    except Exception as error:
-        logging.error(f"Неверный ответ сервера. {error}")
+    except KeyError:
+        logging.error(f"Не верный ответ сервера.")
 
 
 def get_homeworks(current_timestamp):
