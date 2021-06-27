@@ -39,7 +39,7 @@ def parse_homework_status(homework):
         return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
 
     except KeyError:
-        logging.error('Не верный ответ сервера.')
+        return 'Не верный ответ сервера.'
 
 
 def get_homeworks(current_timestamp):
