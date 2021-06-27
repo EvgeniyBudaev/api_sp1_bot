@@ -27,9 +27,8 @@ bot = telegram.Bot(token=TELEGRAM_TOKEN)
 def parse_homework_status(homework):
     """Определяется статус домашней работы."""
     try:
-        homework_name = homework.get('homework_name')
-        status = homework.get('status')
-
+        homework_name = homework['homework_name']
+        status = homework['status']
         if status == 'reviewing':
             return 'Работа взята в ревью.'
         elif status == 'rejected':
@@ -41,8 +40,8 @@ def parse_homework_status(homework):
         else:
             return 'Статус домашней работы не определен.'
 
-    except Exception as error:
-        logging.error(f"Не верный ответ сервера. {error}")
+    except KeyError as error:
+        logging.error(error)
         return 'Не верный ответ сервера.'
 
 
